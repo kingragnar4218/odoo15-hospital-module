@@ -12,7 +12,7 @@
 <!--        , ('age' , '&lt;' , 5) NOTE : here you can add more filter condition -->
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first female patient
+                Create your first female patient here now it only github testing 
             </p>
         </field>
     </record>
