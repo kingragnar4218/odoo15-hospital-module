@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu (App) -->
+    <menuitem id="menu_hospital_root"
+              name="Hospital"
+              web_icon="ht_hospital,static/icon/icon.png"
+              sequence="10"/>
+
+    <!-- Patient Master Menu -->
+    <menuitem id="menu_patient_master"
+              name="Patient Details"
+              parent="menu_hospital_root"
+              sequence="20"/>
+
+    <!-- Patient Menu -->
+    <menuitem id="menu_patient"
+              name="Patients"
+              parent="menu_patient_master"
+              action="action_hospital_patient"
+              sequence="30"/>
+
+</odoo>
