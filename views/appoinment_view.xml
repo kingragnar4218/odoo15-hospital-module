@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+        <record id="view_hospital_appoinment_tree" model="ir.ui.view">
+            <field name="name">hospital.appoinment.tree</field>
+            <field name="model">hospital.appoinment</field>
+            <field name="arch" type="xml">
+                <tree>
+<!--                    here it add from appoinment.py file many2one field -->
+
+                    <field name="patient_id" />
+                    <field name="appoinment_date" />
+                    <field name="booking_date" />
+
+                </tree>
+            </field>
+        </record>
+
+
+    <record id="view_hospital_appoinment_form" model="ir.ui.view">
+        <field name="name">hospital.appoinment.form</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="patient_id" />
+                            <field name="ref" />
+                            <field name="gender" />
+
+                        </group>
+                        <group>
+                            <field name="appoinment_date" />
+                            <field name="booking_date" />
+                        </group>
+                    </group>
+                </sheet>
+
+                <!--                chatter section -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_appoinment_search" model="ir.ui.view">
+        <field name="model">hospital.appoinment.search</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <search>
+
+            </search>
+        </field>
+    </record>
+
+    <!-- Window Action -->
+    <record id="action_hospital_Appoinment" model="ir.actions.act_window">
+        <field name="name">Patients</field>
+        <field name="res_model">hospital.appoinment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{ }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Appoinment
+            </p>
+        </field>
+    </record>
+
+     <menuitem id="menu_appoinment"
+              name=" Appoinment "
+              parent="menu_appoinment_master"
+              action="action_hospital_Appoinment"
+              sequence="30"/>
+
+</odoo>

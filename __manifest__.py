@@ -6,13 +6,14 @@
     'author': 'harsh',
     'website': 'https://www.hthospital.com',
 
-    'depends': ['base'],
+    'depends': ['base' ,'mail'],
 
     'data': [
         'security/ir.model.access.csv',
         'views/patient_view.xml',   # action first
         'views/manu.xml',           # menu after action
         'views/female_patient_view.xml',
+        'views/appoinment_view.xml',
     ],
 
     'sequence': -100,
