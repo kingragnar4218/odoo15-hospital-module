@@ -5,6 +5,9 @@ class HospitalAppoinment(models.Model):
     _name = "hospital.appoinment"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Hospital Appoinment"
+    _rec_name = "patient_id"
+
+    active = fields.Boolean(string="Active"  , default=True , tracking=True)
 
     patient_id = fields.Many2one('hospital.patient' , string="Patient")
 
@@ -16,6 +19,42 @@ class HospitalAppoinment(models.Model):
     booking_date = fields.Date(string="Booking Date" , default=fields.Date.context_today)
     ref = fields.Char(string="Reference", tracking=True)
 
+    #here this field use html
+    precreation = fields.Html(string="Precreation", tracking=True)
+
+    # priority widget
+    priority = fields.Selection([
+        ('0', 'Normal'),
+        ('1', 'Low'),
+        ('2', 'High'),
+        ('3', 'Very High'),
+    ], string="Priority")
+
+    # statusbar
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_consultation', 'In Consultation'),
+        ('done', 'Done'),
+        ('cancel', 'Cancelled '),
+    ], default="draft", string="status" , required=True)
+
+    doctor_id = fields.Many2one('res.users' , string="Doctor")
+
     @api.onchange('patient_id')
     def onchange_patient_id(self):
         self.ref = self.patient_id.ref
+
+
+    def action_test(self):
+        print("button clickkkkkkkkkkk")
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'Click Successfull',
+                'type': 'rainbow_man',
+            }
+        }
+
+
+
+

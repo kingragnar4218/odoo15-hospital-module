@@ -9,6 +9,8 @@ class HospitalPatient(models.Model):
     _name = "hospital.patient"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Hospital Patient"
+    #_rec_name = "name"
+
 
     name = fields.Char(string="Patient Name" , tracking=True)
 
@@ -23,6 +25,7 @@ class HospitalPatient(models.Model):
         ('female', 'Female')
     ], string="Gender" , tracking=True)
     active = fields.Boolean(string="Active"  , default=True , tracking=True)
+    appoinment_id = fields.Many2one('hospital.appoinment', string="Appoinment" , tracking=True)
 
     @api.depends('date_of_birth')
     #if here you don't import api from odoo so it give you internal server error when you restart server

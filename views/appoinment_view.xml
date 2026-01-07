@@ -2,20 +2,40 @@
 <odoo>
 
 
-        <record id="view_hospital_appoinment_tree" model="ir.ui.view">
-            <field name="name">hospital.appoinment.tree</field>
-            <field name="model">hospital.appoinment</field>
-            <field name="arch" type="xml">
-                <tree>
-<!--                    here it add from appoinment.py file many2one field -->
+    <record id="view_hospital_appoinment_tree" model="ir.ui.view">
+        <field name="name">hospital.appoinment.tree</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <!-- add color in tree view   -->
+            <tree   decoration-success="state == 'done'"
+                    decoration-info="state == 'draft'"
+                    decoration-danger="state == 'cancel'"
+                    decoration-warning="state == 'in_consultation'"
+                    sample="1">
 
-                    <field name="patient_id" />
-                    <field name="appoinment_date" />
-                    <field name="booking_date" />
+                <!--  here it add from appoinment.py file many2one field -->
+                <!-- here  optional="show" this attribute is create dynamic list it create three dot right side top of list view  -->
+                <field name="patient_id" optional="show"/>
+                <field name="appoinment_date" optional="show"/>
+                <field name="booking_date" optional="show"/>
+                <!-- here widget="many2one_avatar_user" this widget is show you user photo and also show chat window   -->
+                <field name="doctor_id" widget="many2one_avatar_user"/>
+                <field name="ref" optional="show"/>
+                <field name="gender" optional="show"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
 
-                </tree>
-            </field>
-        </record>
+                <!-- add color in state   -->
+                <field name="state" optional="show"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"
+                       decoration-danger="state == 'cancel'"
+                       decoration-warning="state == 'in_consultation'"
+                       widget="badge"/>
+
+
+            </tree>
+        </field>
+    </record>
 
 
     <record id="view_hospital_appoinment_form" model="ir.ui.view">
@@ -23,19 +43,58 @@
         <field name="model">hospital.appoinment</field>
         <field name="arch" type="xml">
             <form>
+                <!-- if you add this attribute in yor form so it disable to this : create="0" delete="0"  edit="0"  -->
+                <header>
+                    <field name="state" widget="statusbar" nolabel="1" options="{'clickable' : '1'}"/>
+<!--                    if you want to use this attribute in statusbar :- statusbar_visible="draft,in_consultation,done" -->
+                </header>
+
                 <sheet>
+                    <div>
+                        <h1>
+                            <field name="priority" widget="priority"  class="mr-3"/>
+                        </h1>
+                    </div>
+                    <!-- form section start  -->
                     <group>
                         <group>
-                            <field name="patient_id" />
+                            <field name="patient_id" default_focus="1"/>
                             <field name="ref" />
                             <field name="gender" />
-
                         </group>
                         <group>
                             <field name="appoinment_date" />
-                            <field name="booking_date" />
+                            <field name="booking_date"  />
+                            <field name="doctor_id" widget="many2one_avatar_user" />
+                            <!--- this object button is use to call python function  -->
+                            <button name="action_test" string="Object button " type="object" class="oe_highlight"/>
+                            <!--- this action button is use to redirect from one page to another page  -->
+                            <button name="%(ht_hospital.action_hospital_patient)d" string="Action button " type="action"
+                                    help=" you click this button so you go on the patient page "
+                                    confirm="are you sure you want to go patient page" class="oe_highlight"/>
                         </group>
                     </group>
+                    <!-- form section finish  -->
+
+                    <!-- notebook section start  -->
+                    <notebook>
+                        <page string="Prescription" name="prescription">
+                            <group>
+                                <!--here this field use html [ appoinment.py ]  -->
+
+                                <!--    resizable -> works in Community-->
+                                <!--    collaborative -> NOT supported in Community-->
+                                <field name="precreation" placeholder="Enter your Precreation"
+                                options="{'resizable' : true}" />
+                            </group>
+                        </page>
+                        <page string="Text" name="text">
+                            <group>
+                            </group>
+                        </page>
+                    </notebook>
+                    <!-- notebook section finish  -->
+
                 </sheet>
 
                 <!--                chatter section -->

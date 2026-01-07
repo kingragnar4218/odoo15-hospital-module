@@ -18,13 +18,15 @@
         <field name="model">hospital.patient.form</field>
         <field name="model">hospital.patient</field>
         <field name="arch" type="xml">
-            <form>
+            <form sample="1">
                 <sheet>
                     <group>
                         <group>
                             <field name="name"/>
                             <field name="date_of_birth"/>
                             <field name="age"/>
+                            <field name="appoinment_id"/>
+
                         </group>
                         <group>
                             <!--                            <field name="ref"/>-->
