@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_hospital_appoinment_activity" model="ir.ui.view">
+        <field name="name">hospital.appoinment.activity</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+
+            <activity string="Appoinment">
+                <field name="patient_id"/>
+                <field name="ref"/>
+                <templates>
+                    <div t-name="activity-box">
+                        <img t-att-src="activity_image('hospital.patient', 'image', record.patient_id.raw_value)" t-att-title="record.patient_id.value" t-att-alt="record.patient_id.value"/>
+                        <div>
+                            <field name="ref" display="full"/>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
 
     <record id="view_hospital_appoinment_tree" model="ir.ui.view">
         <field name="name">hospital.appoinment.tree</field>
@@ -11,7 +30,7 @@
                     decoration-info="state == 'draft'"
                     decoration-danger="state == 'cancel'"
                     decoration-warning="state == 'in_consultation'"
-                    sample="1">
+                    sample="1"  multi_edit="1">
 
                 <!--  here it add from appoinment.py file many2one field -->
                 <!-- here  optional="show" this attribute is create dynamic list it create three dot right side top of list view  -->
@@ -22,6 +41,7 @@
                 <field name="doctor_id" widget="many2one_avatar_user"/>
                 <field name="ref" optional="show"/>
                 <field name="gender" optional="show"/>
+
                 <field name="activity_ids" widget="list_activity" optional="show"/>
 
                 <!-- add color in state   -->
@@ -45,7 +65,15 @@
             <form>
                 <!-- if you add this attribute in yor form so it disable to this : create="0" delete="0"  edit="0"  -->
                 <header>
-                    <field name="state" widget="statusbar" nolabel="1" options="{'clickable' : '1'}"/>
+                    <button name="action_in_consultation" string="in consultation"  type="object" states="draft" class="oe_highlight"/>
+
+                    <button name="action_done" string="Mark as Done"  type="object" states="in_consultation"
+                            data-hotkey="v" class="oe_highlight" />
+                    <button name="action_cancel" string="Cancel"  type="object" states="draft,in_consultation"
+                            data-hotkey="z" />
+                    <button name="action_draft" string="Mack as Draft"  type="object" states="cancel" class="oe_highlight"/>
+                    <!-- options="{'clickable' : '1'}" -->
+                    <field name="state" widget="statusbar" nolabel="1" />
 <!--                    if you want to use this attribute in statusbar :- statusbar_visible="draft,in_consultation,done" -->
                 </header>
 
@@ -64,14 +92,15 @@
                         </group>
                         <group>
                             <field name="appoinment_date" />
+                            <field name="hide_sales_price" groups="base.group_no_one" />
                             <field name="booking_date"  />
                             <field name="doctor_id" widget="many2one_avatar_user" />
                             <!--- this object button is use to call python function  -->
-                            <button name="action_test" string="Object button " type="object" class="oe_highlight"/>
+                            <button name="action_test" string="Object button " type="object" class="oe_highlight" groups="base.group_no_one"/>
                             <!--- this action button is use to redirect from one page to another page  -->
                             <button name="%(ht_hospital.action_hospital_patient)d" string="Action button " type="action"
                                     help=" you click this button so you go on the patient page "
-                                    confirm="are you sure you want to go patient page" class="oe_highlight"/>
+                                    confirm="are you sure you want to go patient page" class="oe_highlight" groups="base.group_no_one"/>
                         </group>
                     </group>
                     <!-- form section finish  -->
@@ -85,11 +114,28 @@
                                 <!--    resizable -> works in Community-->
                                 <!--    collaborative -> NOT supported in Community-->
                                 <field name="precreation" placeholder="Enter your Precreation"
-                                options="{'resizable' : true}" />
+                                       options="{'resizable' : true , 'codeview' : true }" />
                             </group>
                         </page>
-                        <page string="Text" name="text">
+                        <page string="Pharmacy" name="text">
                             <group>
+                                <field name="pharmacy_line_ids">
+                                    <tree editable="bottom">
+                                        <!-- if here you set editable="top" so it add item to top   -->
+                                        <field name="product_id"/>
+                                        <field name="price_unit"
+                                         attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}" />
+                                        <field name="qty"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="product_id"/>
+                                            <field name="price_unit"
+                                             attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}" />
+                                            <field name="qty"/>
+                                        </group>
+                                    </form>
+                                </field>
                             </group>
                         </page>
                     </notebook>
@@ -121,7 +167,7 @@
     <record id="action_hospital_Appoinment" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,activity</field>
         <field name="context">{ }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

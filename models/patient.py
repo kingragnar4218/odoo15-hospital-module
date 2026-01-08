@@ -25,7 +25,11 @@ class HospitalPatient(models.Model):
         ('female', 'Female')
     ], string="Gender" , tracking=True)
     active = fields.Boolean(string="Active"  , default=True , tracking=True)
+
     appoinment_id = fields.Many2one('hospital.appoinment', string="Appoinment" , tracking=True)
+    tag_ids = fields.Many2many('patient.tag',  string="Tags")
+
+    image = fields.Image(string="Image" , tracking=True)
 
     @api.depends('date_of_birth')
     #if here you don't import api from odoo so it give you internal server error when you restart server

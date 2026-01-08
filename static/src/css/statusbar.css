@@ -1,0 +1,11 @@
+/* Remove border from statusbar */
+.o_statusbar_status {
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.o_statusbar_status button,
+.o_statusbar_status .btn {
+    border: 0 !important;
+    box-shadow: none !important;
+}
