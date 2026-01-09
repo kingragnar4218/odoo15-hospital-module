@@ -69,9 +69,15 @@
 
                     <button name="action_done" string="Mark as Done"  type="object" states="in_consultation"
                             data-hotkey="v" class="oe_highlight" />
+
+<!--                    <button name="%(ht_hospital.action_cancel_appoinment)d" string="Cancel"  type="action" states="draft,in_consultation"-->
+<!--                            data-hotkey="z" />-->
+
                     <button name="action_cancel" string="Cancel"  type="object" states="draft,in_consultation"
                             data-hotkey="z" />
+
                     <button name="action_draft" string="Mack as Draft"  type="object" states="cancel" class="oe_highlight"/>
+
                     <!-- options="{'clickable' : '1'}" -->
                     <field name="state" widget="statusbar" nolabel="1" />
 <!--                    if you want to use this attribute in statusbar :- statusbar_visible="draft,in_consultation,done" -->

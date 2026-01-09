@@ -6,8 +6,15 @@
         <field name="arch" type="xml">
             <form string="Cancel Appoinment">
                 <group>
-                    <field name="appoinment_id"/>
+                    <group>
+                        <field name="appoinment_id"/>
+                        <field name="reason"/>
+                    </group>
+                    <group>
+                        <field name="date_cancel"/>
+                    </group>
                 </group>
+
                 <footer>
                     <button name="action_cancel"
                             type="object"
@@ -22,10 +29,10 @@
     </record>
 
     <record id="action_cancel_appoinment" model="ir.actions.act_window">
-    <field name="name">Cancel Appoinment</field>
-    <field name="res_model">cancel.appoinment.wizard</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-</record>
+        <field name="name">Cancel Appoinment</field>
+        <field name="res_model">cancel.appoinment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
 </odoo>

@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-from sys import api_version
-
 from odoo import api ,models, fields
 from datetime import datetime , date
-
 
 class HospitalPatient(models.Model):
     _name = "hospital.patient"
@@ -42,6 +38,37 @@ class HospitalPatient(models.Model):
             else:
                 rec.age = 0
 
+    @api.model
+    def create(self , vals):
+        ''' override methods demoo   and sequence_data '''
+        # print(".........", self.env['ir.sequence'])
+        vals['ref']=self.env['ir.sequence'].next_by_code('hospital.patient')
+        return super(HospitalPatient , self).create(vals)
+
+    def write(self, vals):
+        if not self.ref and not vals.get('ref'):
+            vals['ref'] = self.env['ir.sequence'].next_by_code('hospital.patient')
+        return super(HospitalPatient, self).write(vals)
+
+    # def name_get(self):
+    #     patient_list = []
+    #     for record in self:
+    #         name = record.ref + record.name
+    #         patient_list.append((record.id, name))
+    #     return patient_list
+
+    def name_get(self):
+        return [(record.id , "[%s]:%s" % (record.ref, record.name)) for record in self ]
+
+    # def name_get(self):
+    #     result = []
+    #     for record in self:
+    #         if record.ref:
+    #             display_name = f"[{record.ref}] {record.name}"
+    #         else:
+    #             display_name = record.name
+    #         result.append((record.id, display_name))
+    #     return result
 
 #Asctivate virtual environment :- source venv/bin/activate
 # Password superadmin (database) in office system  : Md09kHHDNrfpoDnw

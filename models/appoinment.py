@@ -68,8 +68,10 @@ class HospitalAppoinment(models.Model):
             rec.state = 'done'
 
     def action_cancel(self):
-        for rec in self:
-            rec.state = 'cancel'
+        # for rec in self:
+        #     rec.state = 'cancel'
+        action = self.env.ref('ht_hospital.action_cancel_appoinment')
+        return action
 
     def action_draft(self):
         for rec in self:
@@ -88,3 +90,4 @@ class AppointmentPharmacyLines(models.Model):
 
 
 
+#https://apps.odoo.com/apps/modules/15.0/om_hospital
