@@ -10,4 +10,8 @@ access.patient.tag,access_patient_tag,ht_hospital.model_patient_tag,base.group_u
 access_cancel_appoinment_wizard,access_cancel_appoinment_wizard,model_cancel_appoinment_wizard,base.group_user,1,1,1,1
 
 
+access_odoo_playground,access_odoo_playground,model_odoo_playground,,1,1,1,1
+
+
+
 

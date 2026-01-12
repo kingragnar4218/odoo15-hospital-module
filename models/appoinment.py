@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import api ,models, fields
+from odoo import api ,models, fields , _
+from odoo.exceptions import ValidationError
 
 class HospitalAppoinment(models.Model):
     _name = "hospital.appoinment"
@@ -9,7 +10,7 @@ class HospitalAppoinment(models.Model):
 
     active = fields.Boolean(string="Active"  , default=True , tracking=True)
 
-    patient_id = fields.Many2one('hospital.patient' , string="Patient")
+    patient_id = fields.Many2one('hospital.patient' , string="Patient" , ondelete='cascade' , tracking=True)
 
     #here add readonly = True that's means you can not change that value if it false so you can change it
     gender = fields.Selection(related="patient_id.gender" , readonly=False)
@@ -48,6 +49,13 @@ class HospitalAppoinment(models.Model):
     def onchange_patient_id(self):
         self.ref = self.patient_id.ref
 
+    def unlink(self):
+        print("check for demo ________________________________________")
+
+        if self.state != 'draft':
+            raise ValidationError(_("You cannot delete an appointment in Done state"))
+
+        return super(HospitalAppoinment, self).unlink()
 
     def action_test(self):
         print("button clickkkkkkkkkkk")

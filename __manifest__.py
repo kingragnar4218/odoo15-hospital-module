@@ -22,6 +22,7 @@
         'views/female_patient_view.xml',
         'views/appoinment_view.xml',
         'views/patient_tag_view.xml',
+        'views/odoo_playgroung_view.xml',
 ],
     # 'assets': {
     #     'web.assets_backend': [
