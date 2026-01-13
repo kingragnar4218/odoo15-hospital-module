@@ -23,6 +23,7 @@
         'views/appoinment_view.xml',
         'views/patient_tag_view.xml',
         'views/odoo_playgroung_view.xml',
+        'views/res_config_settings_views.xml',
 ],
     # 'assets': {
     #     'web.assets_backend': [

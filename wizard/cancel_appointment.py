@@ -30,4 +30,5 @@ class CancelAppoinmentWizard(models.TransientModel):
     def action_cancel(self):
         if self.appoinment_id.booking_date == fields.Date.today() :
             raise ValidationError('You cannot cancel the appoinment')
+        self.appoinment_id.state='cancel'
         return
