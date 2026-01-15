@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!--    this is mark as done button in action button  -->
+    <record id="action_mark_as_done" model="ir.actions.server">
+        <field name="name">Mark As Done</field>
+        <field name="type">ir.actions.server</field>
+
+        <!-- MUST MATCH MODEL NAME EXACTLY -->
+        <field name="model_id" ref="model_hospital_appoinment"/>
+        <field name="binding_model_id" ref="model_hospital_appoinment"/>
+
+        <!-- THIS LINE WAS MISSING (MOST IMPORTANT) -->
+        <field name="binding_type">action</field>
+
+        <!-- show in list view Action menu -->
+        <field name="binding_view_types">list</field>
+
+        <field name="code">
+            for record in records:
+                if record.state == 'in_consultation':
+                    record.action_done()
+        </field>
+    </record>
+
+<!--                activity sction start -->
     <record id="view_hospital_appoinment_activity" model="ir.ui.view">
         <field name="name">hospital.appoinment.activity</field>
         <field name="model">hospital.appoinment</field>
@@ -11,7 +34,8 @@
                 <field name="ref"/>
                 <templates>
                     <div t-name="activity-box">
-                        <img t-att-src="activity_image('hospital.patient', 'image', record.patient_id.raw_value)" t-att-title="record.patient_id.value" t-att-alt="record.patient_id.value"/>
+                        <img t-att-src="activity_image('hospital.patient', 'image', record.patient_id.raw_value)"
+                             t-att-title="record.patient_id.value" t-att-alt="record.patient_id.value"/>
                         <div>
                             <field name="ref" display="full"/>
                         </div>
@@ -20,20 +44,36 @@
             </activity>
         </field>
     </record>
+    <!--                activity sction finish -->
 
+    <!-- calendar view start  -->
+    <record id="view_hospital_appoinment_calendar" model="ir.ui.view">
+        <field name="name">hospital.appoinment.calendar</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="arch" type="xml">
+            <calendar string="appoinment" date_start="booking_date" mode="month">
+<!--                video 10:16 jovano che -->
+                <field name="patient_id"/>
+            </calendar>
+        </field>
+    </record>
+    <!-- calendar view finish  -->
+
+
+    <!--    this is tree view it show all data -->
     <record id="view_hospital_appoinment_tree" model="ir.ui.view">
         <field name="name">hospital.appoinment.tree</field>
         <field name="model">hospital.appoinment</field>
         <field name="arch" type="xml">
             <!-- add color in tree view   -->
-            <tree   decoration-success="state == 'done'"
-                    decoration-info="state == 'draft'"
-                    decoration-danger="state == 'cancel'"
-                    decoration-warning="state == 'in_consultation'"
-                    sample="1"  multi_edit="1">
+            <tree decoration-success="state == 'done'"
+                  decoration-info="state == 'draft'"
+                  decoration-danger="state == 'cancel'"
+                  decoration-warning="state == 'in_consultation'"
+                  sample="1" multi_edit="1">
 
                 <header>
-                    <button name="action_in_consultation" string="in consultation"  type="object" />
+                    <button name="action_in_consultation" string="in consultation" type="object"/>
                 </header>
 
 
@@ -60,26 +100,28 @@
                 <button name="action_done" type="object" class="fa fa-check btn-success"
                         attrs="{'invisible' :[('state' , '!=' , 'in_consultation' )] }"/>
 
-<!--                <button name="%(ht_hospital.action_cancel_appoinment)d"-->
-<!--                        class="fa fa-times btn-danger"-->
-<!--                        context="{'default_reason': 'test', 'hide_appointment': 1}"-->
-<!--                        attrs="{'invisible': [('state', 'not in', ('draft', 'in_consultation'))]}"-->
-<!--                        type="action"/>-->
-<!--                                here  you can use both code upper     [ see video 94 ]  -->
-                <button name="%(ht_hospital.action_cancel_appoinment)d" class="fa fa-times btn-danger"  type="action"
-                            context="{'default_appoinment_id':active_id, 'hide_appointment': 1}"
+                <!--                <button name="%(ht_hospital.action_cancel_appoinment)d"-->
+                <!--                        class="fa fa-times btn-danger"-->
+                <!--                        context="{'default_reason': 'test', 'hide_appointment': 1}"-->
+                <!--                        attrs="{'invisible': [('state', 'not in', ('draft', 'in_consultation'))]}"-->
+                <!--                        type="action"/>-->
+                <!--                                here  you can use both code upper     [ see video 94 ]  -->
+                <button name="%(ht_hospital.action_cancel_appoinment)d" class="fa fa-times btn-danger" type="action"
+                        context="{'default_appoinment_id':active_id, 'hide_appointment': 1}"
 
-                            attrs="{'invisible': [('state', 'not in', ('draft', 'in_consultation'))]}" />
+                        attrs="{'invisible': [('state', 'not in', ('draft', 'in_consultation'))]}"/>
 
                 <groupby name="patient_id">
-                    <button name="action_test" string="Click me" type="object" class="oe_highlight" />
-                    <button name="edit" string="Edit" type="edit"  />
+                    <button name="action_test" string="Click me" type="object" class="oe_highlight"/>
+                    <button name="edit" string="Edit" type="edit"/>
                 </groupby>
+                <field name="progress" widget="progressbar"/>
+
             </tree>
         </field>
     </record>
 
-
+    <!--    this is form that create patient appoinmrnt -->
     <record id="view_hospital_appoinment_form" model="ir.ui.view">
         <field name="name">hospital.appoinment.form</field>
         <field name="model">hospital.appoinment</field>
@@ -87,55 +129,65 @@
             <form>
                 <!-- if you add this attribute in yor form so it disable to this : create="0" delete="0"  edit="0"  -->
                 <header>
-                    <button name="action_in_consultation" string="in consultation"  type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_in_consultation" string="in consultation" type="object" states="draft"
+                            class="oe_highlight"/>
 
-                    <button name="action_done" string="Mark as Done"  type="object" states="in_consultation"
-                            data-hotkey="v" class="oe_highlight" />
+                    <button name="action_done" string="Mark as Done" type="object" states="in_consultation"
+                            data-hotkey="v" class="oe_highlight"/>
 
-                    <button name="%(ht_hospital.action_cancel_appoinment)d" string="Cancel"  type="action" states="draft,in_consultation"
+                    <button name="%(ht_hospital.action_cancel_appoinment)d" string="Cancel" type="action"
+                            states="draft,in_consultation"
                             context="{'default_appoinment_id':active_id , 'hide_appoinment' : 1 }"
-                            data-hotkey="z" />
+                            data-hotkey="z"/>
 
-<!--                    <button name="action_cancel" string="Cancel"  type="object" states="draft,in_consultation"-->
-<!--                            data-hotkey="z" />-->
+                    <!--                    <button name="action_cancel" string="Cancel"  type="object" states="draft,in_consultation"-->
+                    <!--                            data-hotkey="z" />-->
 
-                    <button name="action_draft" string="Mack as Draft"  type="object" states="cancel" class="oe_highlight"/>
+                    <button name="action_draft" string="Mack as Draft" type="object" states="cancel"
+                            class="oe_highlight"/>
 
                     <!-- options="{'clickable' : '1'}" -->
-                    <field name="state" widget="statusbar" nolabel="1" />
-<!--                    if you want to use this attribute in statusbar :- statusbar_visible="draft,in_consultation,done" -->
+                    <field name="state" widget="statusbar" nolabel="1"/>
+                    <!--                    if you want to use this attribute in statusbar :- statusbar_visible="draft,in_consultation,done" -->
                 </header>
 
                 <sheet>
                     <div>
                         <h1>
-                            <field name="priority" widget="priority"  class="mr-3"/>
+                            <field name="priority" widget="priority" class="mr-3"/>
                         </h1>
                     </div>
                     <!-- form section start  -->
                     <group>
                         <group>
                             <field name="patient_id" default_focus="1"/>
-                            <field name="ref" readonly="1"  force_save="1"/>
-                            <field name="gender" />
+                            <field name="ref" readonly="1" force_save="1"/>
+                            <field name="gender"/>
+                            <field name="operation_name"/>
                         </group>
                         <group>
-                            <field name="appoinment_date" />
-                            <field name="hide_sales_price" groups="base.group_no_one" />
-                            <field name="booking_date"  />
-                            <field name="doctor_id" widget="many2one_avatar_user" />
+                            <field name="appoinment_date"/>
+                            <field name="hide_sales_price" groups="base.group_no_one"/>
+                            <field name="booking_date"/>
+                            <field name="doctor_id" widget="many2one_avatar_user"/>
                             <!--- this object button is use to call python function  -->
-                            <button name="action_test" string="Object button " type="object" class="oe_highlight" groups="base.group_no_one"/>
+                            <button name="action_test" string="Object button " type="object" class="oe_highlight"
+                                    groups="base.group_no_one"/>
                             <!--- this action button is use to redirect from one page to another page  -->
                             <button name="%(ht_hospital.action_hospital_patient)d" string="Action button " type="action"
                                     help=" you click this button so you go on the patient page "
-                                    confirm="are you sure you want to go patient page" class="oe_highlight" groups="base.group_no_one"/>
+                                    confirm="are you sure you want to go patient page" class="oe_highlight"
+                                    groups="base.group_no_one"/>
                         </group>
                     </group>
                     <!-- form section finish  -->
 
                     <!-- notebook section start  -->
                     <notebook>
+                        <page string="ProgressBar" name="progressbar">
+<!--                            here you can use gauge , progressbar and Percentpie [NOTE : it not fully support in odoo 15 community version ]-->
+                            <field name="progress" widget="percentpie"/>
+                        </page>
                         <page string="Prescription" name="prescription">
                             <group>
                                 <!--here this field use html [ appoinment.py ]  -->
@@ -143,7 +195,7 @@
                                 <!--    resizable -> works in Community-->
                                 <!--    collaborative -> NOT supported in Community-->
                                 <field name="precreation" placeholder="Enter your Precreation"
-                                       options="{'resizable' : true , 'codeview' : true }" />
+                                       options="{'resizable' : true , 'codeview' : true }"/>
                             </group>
                         </page>
                         <page string="Pharmacy" name="text">
@@ -153,14 +205,14 @@
                                         <!-- if here you set editable="top" so it add item to top   -->
                                         <field name="product_id"/>
                                         <field name="price_unit"
-                                         attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}" />
+                                               attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}"/>
                                         <field name="qty"/>
                                     </tree>
                                     <form>
                                         <group>
                                             <field name="product_id"/>
                                             <field name="price_unit"
-                                             attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}" />
+                                                   attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}"/>
                                             <field name="qty"/>
                                         </group>
                                     </form>
@@ -181,7 +233,7 @@
             </form>
         </field>
     </record>
-
+    <!--here search bar section -->
     <record id="view_hospital_appoinment_search" model="ir.ui.view">
         <field name="model">hospital.appoinment.search</field>
         <field name="model">hospital.appoinment</field>
@@ -196,7 +248,7 @@
     <record id="action_hospital_Appoinment" model="ir.actions.act_window">
         <field name="name">Patients</field>
         <field name="res_model">hospital.appoinment</field>
-        <field name="view_mode">tree,form,activity</field>
+        <field name="view_mode">tree,form,calendar,activity</field>
         <field name="context">{ }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -204,8 +256,8 @@
             </p>
         </field>
     </record>
-
-     <menuitem id="menu_appoinment"
+    <!--    submenu-->
+    <menuitem id="menu_appoinment"
               name=" Appoinment "
               parent="menu_appoinment_master"
               action="action_hospital_Appoinment"

@@ -1,27 +1,29 @@
 # -*- coding: utf-8 -*-
-from odoo import api ,models, fields , _
+from odoo import api, models, fields, _
 from odoo.exceptions import ValidationError
+
 
 class HospitalAppoinment(models.Model):
     _name = "hospital.appoinment"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Hospital Appoinment"
     _rec_name = "patient_id"
+    _order = 'id'
 
-    active = fields.Boolean(string="Active"  , default=True , tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
-    patient_id = fields.Many2one('hospital.patient' , string="Patient" , ondelete='cascade' , tracking=True)
+    patient_id = fields.Many2one('hospital.patient', string="Patient", ondelete='cascade', tracking=True)
 
-    #here add readonly = True that's means you can not change that value if it false so you can change it
-    gender = fields.Selection(related="patient_id.gender" , readonly=False)
+    # here add readonly = True that's means you can not change that value if it false so you can change it
+    gender = fields.Selection(related="patient_id.gender", readonly=False)
 
-    #this field set default date to today
-    appoinment_date = fields.Datetime(string="Appoinment Date" , default=fields.Datetime.now)
-    booking_date = fields.Date(string="Booking Date" , default=fields.Date.context_today)
+    # this field set default date to today
+    appoinment_date = fields.Datetime(string="Appoinment Date", default=fields.Datetime.now)
+    booking_date = fields.Date(string="Booking Date", default=fields.Date.context_today)
     ref = fields.Char(string="Reference", tracking=True)
 
-    #here this field use html
-    precreation = fields.Html(string="Precreation", tracking=True)
+    # here this field use html
+    precreation = fields.Html(string="Precreation",  tracking=True)
 
     # priority widget
     priority = fields.Selection([
@@ -37,13 +39,14 @@ class HospitalAppoinment(models.Model):
         ('in_consultation', 'In Consultation'),
         ('done', 'Done'),
         ('cancel', 'Cancelled '),
-    ], default="draft", string="status" , required=True)
+    ], default="draft", string="status", required=True)
 
-    doctor_id = fields.Many2one('res.users' , string="Doctor" , tracking=True)
-    pharmacy_line_ids = fields.One2many('appointment.pharmacy.lines' , 'appoinment_id' )#string="Pharmacy Lines"
-    hide_sales_price = fields.Boolean(string="Hide Sales Price" , tracking=True)
+    doctor_id = fields.Many2one('res.users', string="Doctor", tracking=True)
+    pharmacy_line_ids = fields.One2many('appointment.pharmacy.lines', 'appoinment_id')  # string="Pharmacy Lines"
+    hide_sales_price = fields.Boolean(string="Hide Sales Price", tracking=True)
 
-
+    operation_name = fields.Many2one('hospital.operation', string='Operation')
+    progress = fields.Integer(string="Progress", compute='_compute_progress', store=True )
 
     @api.onchange('patient_id')
     def onchange_patient_id(self):
@@ -86,17 +89,29 @@ class HospitalAppoinment(models.Model):
         for rec in self:
             rec.state = 'draft'
 
+    @api.depends('state')
+    def _compute_progress(self):
+        ''' progressbar method  '''
+        for rec in self:
+            if rec.state == 'draft':
+                progress = 25
+            elif rec.state == 'in_consultation':
+                progress = 50
+            elif rec.state == 'done':
+                progress = 100
+            else:
+                progress = 0
+            rec.progress = progress
+
 
 # new model
 class AppointmentPharmacyLines(models.Model):
     _name = 'appointment.pharmacy.lines'
     _description = 'Appointment Pharmacy Lines'
 
-    product_id = fields.Many2one('product.product', string='Product' , required=True)
+    product_id = fields.Many2one('product.product', string='Product', required=True)
     price_unit = fields.Float(string='Price')
     qty = fields.Integer(string='Quantity')
-    appoinment_id = fields.Many2one('hospital.appoinment' , string="Appoinment")
+    appoinment_id = fields.Many2one('hospital.appoinment', string="Appoinment")
 
-
-
-#https://apps.odoo.com/apps/modules/15.0/om_hospital
+# https://apps.odoo.com/apps/modules/15.0/om_hospital

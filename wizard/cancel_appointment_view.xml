@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!--    form view section  start-->
     <record id="view_cancel_appoinment_form" model="ir.ui.view">
         <field name="name">cancel.appoinment.wizard.form</field>
         <field name="model">cancel.appoinment.wizard</field>
@@ -28,12 +29,16 @@
             </form>
         </field>
     </record>
+    <!--    form view section finish -->
 
+
+    <!-- Window Action start-->
     <record id="action_cancel_appoinment" model="ir.actions.act_window">
         <field name="name">Cancel Appoinment</field>
         <field name="res_model">cancel.appoinment.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
+    <!-- Window Action finish-->
 
 </odoo>

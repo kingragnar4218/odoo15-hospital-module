@@ -11,32 +11,33 @@ class HospitalPatient(models.Model):
     _description = "Hospital Patient"
     #_rec_name = "name"
 
-
+    #--------- declaration of fields start  ---------
     name = fields.Char(string="Patient Name" , tracking=True)
-
     date_of_birth = fields.Date(string="Date of Birth" , tracking=True  )
-
     ref = fields.Char(string="Reference" , tracking=True)
     # ref = fields.Char(string="Patient Reference")
-
     age = fields.Integer(string="Age" , compute="_compute_age" , search="_search_age" , tracking=True)
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female')
     ], string="Gender" , tracking=True)
     active = fields.Boolean(string="Active"  , default=True , tracking=True)
-
     appoinment_id = fields.Many2one('hospital.appoinment', string="Appoinment" , tracking=True)
     tag_ids = fields.Many2many('patient.tag',  string="Tags")
     image = fields.Image(string="Image" , tracking=True)
-
     appointment_count = fields.Integer(string="Appointment Count", compute="_compute_appointment_count",store=True)
-
     appointment_ids = fields.One2many('hospital.appoinment','patient_id',string="Appointments")
-
     parent= fields.Char(string="Parent Name" , tracking=True)
     marital_status = fields.Selection([('married' , 'Married'), ('single' , 'Single') ], string="Marital Status", tracking=True)
     partner_name = fields.Char(string="Partner Name" , tracking=True)
+    is_birthday = fields.Boolean(string="Is Birthday" , tracking=True , compute="_compute_is_birthday")
+    phone = fields.Char(string="Phone Number" , tracking=True)
+    email = fields.Char(string="Email" , tracking=True)
+    website = fields.Char(string="Website" , tracking=True)
+
+    # --------- declaration of fields finish   ---------
+
+    # --------- declaration of function start ---------
 
     @api.depends('appointment_ids')
     def _compute_appointment_count(self):
@@ -92,13 +93,6 @@ class HospitalPatient(models.Model):
         print("click.....action test")
         return
 
-    # def name_get(self):
-    #     patient_list = []
-    #     for record in self:
-    #         name = record.ref + record.name
-    #         patient_list.append((record.id, name))
-    #     return patient_list
-
     def name_get(self):
         return [(record.id , "[%s]:%s" % (record.ref, record.name)) for record in self ]
 
@@ -112,7 +106,20 @@ class HospitalPatient(models.Model):
     #         result.append((record.id, display_name))
     #     return result
 
+    @api.depends('date_of_birth')
+    def _compute_is_birthday(self):
+        for rec in self:
+            is_birthday = False
+            if rec.date_of_birth:
+                today = date.today()
+                if (
+                        today.day == rec.date_of_birth.day
+                        and today.month == rec.date_of_birth.month
+                ):
+                    is_birthday = True
+            rec.is_birthday = is_birthday
 
+    # --------- declaration of function finish ---------
 
 
 #Asctivate virtual environment :- source venv/bin/activate

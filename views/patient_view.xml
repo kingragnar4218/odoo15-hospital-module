@@ -1,54 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <record id="view_hospital_patient_tree" model="ir.ui.view">
-            <field name="name">hospital.patient.tree</field>
-            <field name="model">hospital.patient</field>
-            <field name="arch" type="xml">
-                <tree export_xlsx="0">
-                    <field name="name" />
-                    <field name="age"/>
-                    <field name="ref"/>
-    <!--                <field name="ref"/>-->
-                    <field name="gender"/>
-                    <!-- color tag  -->
-                    <field name="tag_ids" widget="many2many_tags" />
-                </tree>
-            </field>
-        </record>
+    <!--    this is tree view it show all data start -->
+    <record id="view_hospital_patient_tree" model="ir.ui.view">
+        <field name="name">hospital.patient.tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <tree export_xlsx="0">
+                <field name="name"/>
+                <field name="age" avg="average age"/>
+                <field name="ref"/>
+                <field name="appointment_count" sum="total appoinment "/>
+                <!--                <field name="ref"/>-->
+                <field name="gender"/>
+                <!-- color tag  -->
+                <field name="tag_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+    <!--    this is tree view it show all data finish -->
 
+    <!--    form view section  start-->
     <record id="view_hospital_patient_form" model="ir.ui.view">
         <field name="model">hospital.patient.form</field>
         <field name="model">hospital.patient</field>
         <field name="arch" type="xml">
             <form sample="1">
                 <sheet>
+                    <div class="alert alert-info text-center o_form_header" role="alert"
+                         attrs="{'invisible' : [('is_birthday' , '=' , False)]}">
+                        <a class="close" data-dismiss="alert" href="#">×</a>
+                        <div class="o_statusbar_alert">
+                            <strong>Today is Birthday!</strong>
+                        </div>
+                        <div>
+                            <field name="name" readonly="1"/>
+                        </div>
+                    </div>
+
+
                     <field name="image" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <h4>
-                            <field name="ref" readonly="1" />
+                            <field name="ref" readonly="1"/>
                         </h4>
                         <h2>
-                            <label for="name" string="Name" class="oe_edit_only" />
+                            <label for="name" string="Name" class="oe_edit_only"/>
                             <field name="name"/>
                         </h2>
 
                     </div>
                     <group>
                         <group>
-<!--                            <field name="name"/>-->
+                            <!--                            <field name="name"/>-->
                             <field name="date_of_birth"/>
                             <field name="age"/>
                             <field name="appoinment_id"/>
                             <field name="appointment_count"/>
+                            <field name="is_birthday"/>
                         </group>
                         <group>
                             <!--                            <field name="ref"/>-->
 
-<!--                            <field name="ref"/>-->
-                            <field name="gender" invisible="context.get('hide_gender')"  />
-<!--                            here you can use this widget widget="radio"-->
+                            <!--                            <field name="ref"/>-->
+                            <field name="gender" invisible="context.get('hide_gender')"/>
+                            <!--                            here you can use this widget widget="radio"-->
 
-<!--                             here oi change widget   many2many_checkboxes   -->
+                            <!--                             here oi change widget   many2many_checkboxes   -->
                             <field name="tag_ids" widget="many2many_tags" options="{'color_field' : 'color' }"/>
 
                             <field name="active" invisible="1"/>
@@ -56,12 +73,20 @@
                         </group>
                     </group>
                     <group string="Other Information " name="other_info">
-                        <field name="parent" />
-                        <field name="marital_status" attrs="{'readonly': [('id', '!=', False)]}"/>
-                        <field name="partner_name" attrs="{'invisible': [('marital_status', '!=', 'married')],
+                        <group>
+                            <field name="parent"/>
+                            <field name="marital_status" attrs="{'readonly': [('id', '!=', False)]}"/>
+                            <field name="partner_name" attrs="{'invisible': [('marital_status', '!=', 'married')],
                                                             'readonly': [('id', '!=', False)],
                                                             'required' : [('marital_status', '=', 'married')]}"/>
+                        </group>
+                        <group>
+                            <field name="phone" widget="phone" />
+                            <field name="email" widget="email" />
+                            <field name="website" widget="url" />
+                        </group>
                     </group>
+
                 </sheet>
 
                 <!--                chatter section -->
@@ -73,7 +98,9 @@
             </form>
         </field>
     </record>
+    <!--    form view section finish -->
 
+    <!--  search section start   -->
     <record id="view_hospital_patient_search" model="ir.ui.view">
         <field name="model">hospital.patient.search</field>
         <field name="model">hospital.patient</field>
@@ -86,19 +113,20 @@
                 <filter name="filter_male" string="male" domain="[('gender' , '=' , 'male')]"/>
                 <filter name="filter_female" string="female" domain="[('gender' , '=' , 'female')]"/>
                 <separator/>
-<!--                <filter name="kids" string="kids" domain="[('age' , '&lt;' , 5)]"/>-->
+                <!--                <filter name="kids" string="kids" domain="[('age' , '&lt;' , 5)]"/>-->
                 <filter name="archive" string="archive" domain="[('active' , '=' , False)]"/>
                 <group>
                     <filter string="gender" name="group_by_gender" context="{'group_by' : 'gender'}"/>
                 </group>
                 <searchpanel>
-<!--                    this search panel is you show your left side of module  -->
+                    <!--                    this search panel is you show your left side of module  -->
                     <field name="gender" icon="fa-users" select="multi" enable_counters="1"/>
                 </searchpanel>
 
             </search>
         </field>
     </record>
+    <!--  search section finish  -->
 
     <!-- Window Action -->
     <record id="action_hospital_patient" model="ir.actions.act_window">

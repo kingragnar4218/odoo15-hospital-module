@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <!--    this is tree view it show all data start -->
     <record id="view_patient_tag_tree" model="ir.ui.view">
         <field name="name">patient.tag.tree</field>
         <field name="model">patient.tag</field>
@@ -12,7 +12,8 @@
             </tree>
         </field>
     </record>
-
+    <!--    this is tree view it show all data finish -->
+    <!--    form view section start -->
     <record id="view_patient_tag_form" model="ir.ui.view">
         <field name="name">patient.tag.form</field>
         <field name="model">patient.tag</field>
@@ -35,7 +36,9 @@
             </form>
         </field>
     </record>
+    <!--    form view section finish  -->
 
+    <!--    teg start  -->
     <record id="action_patient_tag" model="ir.actions.act_window">
         <field name="name">Patient Tags</field>
         <field name="type">ir.actions.act_window</field>
@@ -48,7 +51,9 @@
             </p>
         </field>
     </record>
+    <!--    teg end  -->
 
+    <!--    submenu  -->
     <menuitem id="menu_patient_tag"
               name="Tags"
               action="action_patient_tag"

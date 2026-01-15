@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+<!--        form section start -->
     <record id="view_odoo_playground_form" model="ir.ui.view">
         <field name="name">odoo.playground.form</field>
         <field name="model">odoo.playground</field>
@@ -29,7 +29,10 @@
             </form>
         </field>
     </record>
+    <!--        form section finish -->
 
+
+    <!-- Window Action start-->
     <record id="action_playground" model="ir.actions.act_window">
         <field name="name">Play Ground</field>
         <field name="type">ir.actions.act_window</field>
@@ -37,10 +40,13 @@
         <field name="view_mode">form</field>
         <field name="target">inline</field>
     </record>
+    <!-- Window Action finish-->
 
+    <!--    main menu technical start-->
     <menuitem   id="menu_technical" name="Technical" parent="menu_hospital_root" sequence="110">
                 <menuitem   id="menu_playground" name="play ground" action="action_playground" sequence="10"/>
     </menuitem> <!--- this manu show in hospital module -->
+    <!--    main menu technical finish-->
 
     <!---this module show app menu  -->
 <!--    <menuitem   id="menu_technical" name="Technical" sequence="110">-->

@@ -4,6 +4,7 @@ class PatientTag(models.Model):
     _name = 'patient.tag'
     _description = 'Patient Tag'
 
+    # --------- declaration of fields finish  ---------
     name = fields.Char(string='Name', required=True)
     active = fields.Boolean(string='Active', default=True)
     color = fields.Integer(string='Color')
@@ -22,8 +23,9 @@ class PatientTag(models.Model):
 
         return super(PatientTag, self).copy(default)
 
+    # --------- declaration of fields finish  ---------
 
-
+    # --------- declaration of sql constraints  ---------
     _sql_constraints = [
         #here create unique tag name if you create same name tag so it show massage this
         ('unique_tag_unique', 'UNIQUE (name)', 'name must be unique'),
