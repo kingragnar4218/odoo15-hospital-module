@@ -37,15 +37,49 @@ class HospitalPatient(models.Model):
 
     # --------- declaration of fields finish   ---------
 
-    # --------- declaration of function start ---------
 
+
+    # --------- declaration of function start ---------
     @api.depends('appointment_ids')
     def _compute_appointment_count(self):
-        # here you also inverse function see video in youtube :--- [99.add How To Set Inverse Function For Computed Field In Odoo]
         for rec in self:
-            rec.appointment_count = self.env['hospital.appoinment'].search_count([
-                ('patient_id', '=', rec.id)
-            ])
+            rec.appointment_count = 0
+
+        appointment_group = self.env['hospital.appoinment'].read_group(
+            domain=[('state', '=', 'done')],
+            fields=['patient_id'],
+            groupby=['patient_id']
+        )
+
+        for data in appointment_group:
+            if not data.get('patient_id'):
+                continue
+
+            patient_id = data['patient_id'][0]
+            patient_rec = self.browse(patient_id)
+            patient_rec.appointment_count = data['patient_id_count']
+
+    # @api.depends('appointment_ids')
+    # def _compute_appointment_count(self):
+    #     for rec in self:
+    #         rec.appointment_count = 0
+    #
+    #     appointment_group = self.env['hospital.appoinment'].read_group(
+    #         domain=[('state', '=', 'done')],
+    #         fields=['patient_id'],
+    #         groupby=['patient_id']
+    #     )
+    #
+    #     for data in appointment_group:
+    #         patient_id = data['patient_id'][0]
+    #         patient_rec = self.browse(patient_id)
+
+    #def _compute_appointment_count(self):
+        # here you also inverse function see video in youtube :--- [99.add How To Set Inverse Function For Computed Field In Odoo]
+        # for rec in self:
+        #     rec.appointment_count = self.env['hospital.appoinment'].search_count([
+        #         ('patient_id', '=', rec.id)
+        #     ])
 
     @api.depends('date_of_birth')
     #if here you don't import api from odoo so it give you internal server error when you restart server
@@ -118,6 +152,21 @@ class HospitalPatient(models.Model):
                 ):
                     is_birthday = True
             rec.is_birthday = is_birthday
+
+    def action_view_appointments(self):
+        return {
+            'name': _('Appointments'),
+            'res_model': 'hospital.appoinment',
+            'view_mode': 'tree,form,calendar,activity',
+            'context': {
+                'default_patient_id': self.id
+            },
+            'domain': [
+                ('patient_id', '=', self.id)
+            ],
+            'target': 'current',
+            'type': 'ir.actions.act_window',
+        }
 
     # --------- declaration of function finish ---------
 

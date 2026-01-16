@@ -47,13 +47,15 @@
     <!--                activity sction finish -->
 
     <!-- calendar view start  -->
-    <record id="view_hospital_appoinment_calendar" model="ir.ui.view">
+    <record id="view_hospital_appoinment_calendar" model="ir.ui.view" >
         <field name="name">hospital.appoinment.calendar</field>
         <field name="model">hospital.appoinment</field>
         <field name="arch" type="xml">
-            <calendar string="appoinment" date_start="booking_date" mode="month">
+            <calendar string="appoinment" date_start="booking_date" mode="month"
+                      color="state" quick_add="False" >
 <!--                video 10:16 jovano che -->
                 <field name="patient_id"/>
+                <field name="state" invisible="1" filters="1"/>
             </calendar>
         </field>
     </record>
@@ -115,6 +117,8 @@
                     <button name="action_test" string="Click me" type="object" class="oe_highlight"/>
                     <button name="edit" string="Edit" type="edit"/>
                 </groupby>
+<!--                this attribute :- decoration-bf="1" show bold font -->
+                <field name="total_amount" widget="monetary" optional="show" decoration-bf="1"/>
                 <field name="progress" widget="progressbar"/>
 
             </tree>
@@ -171,7 +175,7 @@
                             <field name="booking_date"/>
                             <field name="doctor_id" widget="many2one_avatar_user"/>
                             <!--- this object button is use to call python function  -->
-                            <button name="action_test" string="Object button " type="object" class="oe_highlight"
+                            <button name="action_test" string="Go to site  " type="object" class="oe_highlight"
                                     groups="base.group_no_one"/>
                             <!--- this action button is use to redirect from one page to another page  -->
                             <button name="%(ht_hospital.action_hospital_patient)d" string="Action button " type="action"
@@ -198,27 +202,36 @@
                                        options="{'resizable' : true , 'codeview' : true }"/>
                             </group>
                         </page>
-                        <page string="Pharmacy" name="text">
+                        <page string="Pharmacy" name="pharmacy">
                             <group>
                                 <field name="pharmacy_line_ids">
                                     <tree editable="bottom">
-                                        <!-- if here you set editable="top" so it add item to top   -->
                                         <field name="product_id"/>
                                         <field name="price_unit"
-                                               attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}"/>
+                                               attrs="{'column_invisible': [('parent.hide_sales_price', '=', True)]}"/>
                                         <field name="qty"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="price_subtotal"/>
+
                                     </tree>
+
                                     <form>
                                         <group>
                                             <field name="product_id"/>
-                                            <field name="price_unit"
-                                                   attrs="{'column_invisible' : [('parent.hide_sales_price' , '=' ,True)]}"/>
+                                            <field name="price_unit"/>
                                             <field name="qty"/>
+                                            <field name="price_subtotal" readonly="1"/>
                                         </group>
                                     </form>
                                 </field>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="total_amount" readonly="1" decoration-bf="1"/>
+                                </group>
+
                             </group>
                         </page>
+
                     </notebook>
                     <!-- notebook section finish  -->
 
