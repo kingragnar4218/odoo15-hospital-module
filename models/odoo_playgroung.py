@@ -25,6 +25,19 @@ class OdooPlayGround(models.Model):
     code = fields.Text(string='Code', default=DEFAULT_ENV_VARIABLES)
     result = fields.Text(string='Result')
 
+    # def action_execute(self):
+    #     try:
+    #         if self.model_id:
+    #             model = self.env[self.model_id.model]
+    #         else:
+    #             model = self
+    #
+    #         safe_eval(self.code.strip(), {'self': model}, mode="exec")
+    #         self.result = "Code executed successfully"
+    #
+    #     except Exception as e:
+    #         self.result = str(e)
+
     def action_execute(self):
         try:
             if self.model_id:
