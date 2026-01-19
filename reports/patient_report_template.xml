@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="patient_report_template">
+        <t t-call="web.external_layout">
+            <main>
+                <!-- Loop selected records -->
+                <t t-foreach="docs" t-as="patient">
+                <div class="page">
+                    <h2 style="text-align:center;">
+                        Patient Report
+                    </h2>
+                    <table style="width:100%; border:1px solid black;">
+                        <tr>
+                            <td>
+                                <strong>Name</strong>
+                            </td>
+                            <td>
+                                <t t-esc="patient.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Age</strong>
+                            </td>
+                            <td>
+                                <t t-esc="patient.age"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Gender</strong>
+                            </td>
+                            <td>
+                                <t t-esc="patient.gender"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </t>
+            </main>
+
+
+        </t>
+    </template>
+
+
+    <record id="action_patient_report" model="ir.actions.report">
+        <field name="name">Patient Report</field>
+        <field name="model">hospital.patient</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_hospital.patient_report_template</field>
+        <field name="report_file">ht_hospital.patient_report_template</field>
+        <field name="print_report_name">'Patient Report - %s' % (object.name)</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- PDF Template -->
+    <template id="pharmacy_report_template">
+        <t t-call="web.external_layout">
+            <main>
+                <t t-foreach="docs" t-as="bill">
+                    <div class="page">
+
+                        <!-- Title -->
+                        <h2 style="text-align:center; font-weight:bold;">
+                            Pharmacy Bill
+                        </h2>
+                        <!-- QR Code -->
+                        <!-- NOTE : this is not support in odoo 15 community version   -->
+                        <div style="position:absolute; top:20px; right:20px; text-align:center;">
+                            <img
+                                    t-att-src="'/report/barcode/?barcode_type=QR&amp;value=%s&amp;width=150&amp;height=150' % (
+                                        (
+                                            'Pharmacy Bill | '
+                                            'Patient: %s | '
+                                            'Date: %s | '
+                                            'Total: Rs %s' % (
+                                                bill.patient_id.name or '',
+                                                bill.appoinment_date or '',
+                                                bill.total_amount or 0.0
+                                            )
+                                        ) | urlencode
+                                    )"
+                                    style="width:120px; height:120px;" />
+
+                            <div style="font-size:10px; margin-top:4px;">
+                                Scan for Bill Summary
+                            </div>
+                        </div>
+
+
+                        <!-- Module Name -->
+                        <p style="text-align:center; font-size:14px;">
+                             <strong>Hospital Management</strong>
+                        </p>
+
+                        <br/>
+
+                        <!-- Patient Details -->
+                        <p><strong>Patient:</strong> <t t-esc="bill.patient_id.name"/></p>
+                        <p><strong>Date:</strong> <t t-esc="bill.appoinment_date"/></p>
+
+                        <br/>
+
+                        <!-- Medicine Table -->
+                        <table style="width:100%; border-collapse:collapse; border:1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border:1px solid black; padding:6px;">Medicine</th>
+                                    <th style="border:1px solid black; padding:6px;">Qty</th>
+                                    <th style="border:1px solid black; padding:6px;">Price</th>
+                                    <th style="border:1px solid black; padding:6px;">Subtotal</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="bill.pharmacy_line_ids" t-as="line">
+                                    <tr>
+                                        <td style="border:1px solid black; padding:6px;">
+                                            <t t-esc="line.product_id.name"/>
+                                        </td>
+                                        <td style="border:1px solid black; padding:6px; text-align:center;">
+                                            <t t-esc="line.qty"/>
+                                        </td>
+                                        <td style="border:1px solid black; padding:6px; text-align:right;">
+                                            <t t-esc="line.price_unit"/>
+                                        </td>
+                                        <td style="border:1px solid black; padding:6px; text-align:right;">
+                                            <t t-esc="line.price_subtotal"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                    <!-- Total amount row -->
+                                <tr>
+                                    <h3>
+                                        <td colspan="3"
+                                            style="border:1px solid black; padding:6px; text-align:right; font-weight:bold;">
+                                            Total Amount
+                                        </td>
+                                        <td style="border:1px solid black; padding:6px; text-align:right; font-weight:bold;">
+                                            ₹ <t t-esc="bill.total_amount"/>
+                                        </td>
+                                    </h3>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+
+                        <!-- Total -->
+<!--                        <h3 style="text-align:right; font-weight:bold;">-->
+<!--                            Total Amount: ₹ <t t-esc="bill.total_amount"/>-->
+<!--                        </h3>-->
+
+                    </div>
+                </t>
+            </main>
+        </t>
+    </template>
+
+    <record id="action_pharmacy_report" model="ir.actions.report">
+        <field name="name">Pharmacy Bill</field>
+        <field name="model">hospital.appoinment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ht_hospital.pharmacy_report_template</field>
+        <field name="report_file">ht_hospital.pharmacy_report_template</field>
+        <field name="print_report_name">'Pharmacy Bill - %s' % (object.patient_id.name)</field>
+    </record>
+
+</odoo>

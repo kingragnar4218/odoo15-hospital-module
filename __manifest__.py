@@ -11,6 +11,10 @@
     'data': [
         'security/ir.model.access.csv',
 
+        'reports/patient_report_template.xml',
+        'reports/pharmacy_report_template.xml',
+
+
         'data/patient_tag_data.xml',
         'data/patient.tag.csv',
         'data/sequence_data.xml',

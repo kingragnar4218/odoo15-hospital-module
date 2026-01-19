@@ -25,6 +25,12 @@
         <field name="model">hospital.patient</field>
         <field name="arch" type="xml">
             <form sample="1">
+
+                <header>
+                    <button name="%(action_patient_report)d" string="Print PDF" type="action" class="btn-primary"/>
+                </header>
+
+
                 <sheet>
 
                     <!--star button section start -->

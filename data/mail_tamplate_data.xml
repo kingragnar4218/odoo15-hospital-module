@@ -5,8 +5,9 @@
         <record id="appoinment_mail_templet" model="mail.template">
             <field name="name">Appoinment Templet</field>
             <field name="model_id" ref="ht_hospital.model_hospital_appoinment"/>
-            <field name="subject">Appoinment Detail </field>
-            <field name="email_from">{{ (user.email) }}</field>
+            <field name="subject">Appoinment Detail</field>
+
+            <field name="email_from">{{ user.email }}</field>
             <field name="email_to">{{ object.patient_id.email }}</field>
 
             <field name="body_html" type="html">
@@ -27,13 +28,13 @@
 <!--                                                        <span style="font-size: 10px;">Your Account</span>-->
                                                         <br/>
                                                         <span style="font-size: 20px; font-weight: bold;">
-                                                            <t t-out="object.name''">--</t>
+                                                            <t t-out="object.display_name"/>
                                                         </span>
                                                     </td>
                                                     <td valign="middle" align="right">
-                                                        <img t-attf-src="/logo.png?company={{ user.company_id.id }}"
+                                                        <img t-attf-src="/logo.png?company={{ object.company_id.id }}"
                                                              style="padding: 0px; margin: 0px; height: auto; width: 80px;"
-                                                             t-att-alt="object.company_id.name"/>
+                                                             t-att-alt="user.company_id.name"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -45,6 +46,7 @@
                                             </table>
                                         </td>
                                     </tr>
+
                                     <!-- CONTENT -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
@@ -53,24 +55,29 @@
                                                 <tr>
                                                     <td valign="top" style="font-size: 13px;">
                                                         <div>
-                                                            Dear <t t-out="object.patient_id''"></t>,
+                                                            Dear <t t-out="object.patient_id.name"/> ,
                                                             <br/>
                                                             <br/>
-                                                            Your Appoinment is booked <t t-out="object.appoinment_date''"></t>,
+                                                            Your Appoinment is booked on
+                                                            <t t-out="object.appoinment_date"/> ,
                                                             <br/>
-                                                            Reference number <t t-out="object.name''"></t>,
-
+                                                            Reference number
+                                                            <t t-out="object.display_name"/> ,
                                                             <br/>
                                                             <br/>
                                                             Thanks,
-                                                            <t t-if="user.signature"> </t>
+                                                            <br/>
+
+                                                            <t t-if="user.signature">
+                                                                <t t-out="user.signature"/>
                                                                 <br/>
-                                                                <t t-out="user.signature or ''">--<br/>-- <t t-out="user.name or ''">--<br/>
-                                                                </t>
                                                             </t>
+
+                                                            <t t-out="user.name"/>
                                                         </div>
                                                     </td>
                                                 </tr>
+
                                                 <tr>
                                                     <td style="text-align:center;">
                                                         <hr width="100%"
@@ -80,6 +87,7 @@
                                             </table>
                                         </td>
                                     </tr>
+
                                     <!-- FOOTER -->
                                     <tr>
                                         <td align="center" style="min-width: 590px;">
@@ -102,6 +110,7 @@
                                                                 info@yourcompany.com
                                                             </a>
                                                         </t>
+
                                                         <t t-if="object.company_id.website">
                                                             |
                                                             <a t-att-href="'%s' % object.company_id.website"
@@ -119,6 +128,7 @@
                             </table>
                         </td>
                     </tr>
+
                     <!-- POWERED BY -->
 <!--                    <tr>-->
 <!--                        <td align="center" style="min-width: 590px;">-->
@@ -136,8 +146,8 @@
 <!--                        </td>-->
 <!--                    </tr>-->
                 </table>
-
             </field>
+
 <!--            <field name="lang">{{ object.lang }}</field>-->
             <field name="auto_delete" eval="True"/>
         </record>

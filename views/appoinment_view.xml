@@ -139,10 +139,19 @@
                     <button name="action_done" string="Mark as Done" type="object" states="in_consultation"
                             data-hotkey="v" class="oe_highlight"/>
 
+                    <!-- mail button-->
+                    <button name="action_send_mail" string="Send Mail" type="object"
+                            data-hotkey="v" class="oe_highlight"/>
+
+                    <!-- pdf button-->
+                    <button name="%(action_pharmacy_report)d" string="Print Pharmacy Bill" type="action" class="btn-primary"/>
+
+
                     <button name="%(ht_hospital.action_cancel_appoinment)d" string="Cancel" type="action"
                             states="draft,in_consultation"
                             context="{'default_appoinment_id':active_id , 'hide_appoinment' : 1 }"
                             data-hotkey="z"/>
+
 
                     <!--                    <button name="action_cancel" string="Cancel"  type="object" states="draft,in_consultation"-->
                     <!--                            data-hotkey="z" />-->

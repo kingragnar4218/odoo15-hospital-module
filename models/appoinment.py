@@ -74,6 +74,11 @@ class HospitalAppoinment(models.Model):
         #     }
         #}
 
+    def action_send_mail(self):
+        template = self.env.ref('ht_hospital.appoinment_mail_templet')
+        for rec in self:
+            template.send_mail(rec.id, force_send=True)
+
     def action_in_consultation(self):
         for rec in self:
             if rec.state == 'draft':
